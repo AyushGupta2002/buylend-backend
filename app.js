@@ -1,7 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const { pool } = require("./pool_connection");
 // const { BASE_URL, USER, ADDRESS, EDUCATION, RELATIVE, BANK, FINANCE, SERVICE, PINCODE, HEALTH, MAIN } = require("./src/utilities/routes");
+
 // const userPaths = require("./src/controllers/user");
 // const AddressPaths = require("./src/controllers/address");
 // const EducationPaths = require("./src/controllers/education");
@@ -13,8 +15,8 @@ const app = express();
 // const HealthPaths = require("./src/controllers/health_history");
 // const MainPaths = require("./src/controllers/main");
 // const { getUrl } = require("./src/utilities/helpers");
-//
-//
+
+
 const Pool = require("pg").Pool;
 
 const bodyParser = require("body-parser");
@@ -34,7 +36,7 @@ const corsOptions = {
   exposedHeaders: 'Content-disposition, x-suggested-filename',
 };
 app.use(cors(corsOptions));
-// // Map Model paths with controllers
+// Map Model paths with controllers
 // app.use(getUrl(USER), userPaths);
 // app.use(getUrl(ADDRESS), AddressPaths);
 // app.use(getUrl(EDUCATION), EducationPaths);
@@ -45,7 +47,28 @@ app.use(cors(corsOptions));
 // app.use(getUrl(HEALTH), HealthPaths);
 // app.use(getUrl(MAIN), MainPaths);
 // app.use(getUrl(BANK), BankPaths);
-//
+
+app.get("/", (req, res) => {
+  const Query = `SELECT * from buylend_schema.organisations`;
+  pool.query(
+    Query,
+    (error, result) => {
+      res.json({ response: result.rows });
+    }
+  );
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.use((req, res) => {
   res.status(404);

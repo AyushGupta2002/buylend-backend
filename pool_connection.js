@@ -2,10 +2,10 @@ const Pool = require("pg").Pool;
 
 // Declare a new client instance from Pool()
 const pool = new Pool({
-  user: "u8gxwvjqkop4ltggwwx6",
-  host: "brpbutqbe5bhuxpautl0-postgresql.services.clever-cloud.com",
-  database: "brpbutqbe5bhuxpautl0",
-  password: "F5suO3PMLGvcRJ5RwOEv",
+  user: "upztwcpdebg04zrve9fz",
+  host: "bwnfgxqsex6pxqrhanfs-postgresql.services.clever-cloud.com",
+  database: "bwnfgxqsex6pxqrhanfs",
+  password: "mjZckgCxk8QuAW8O0ZNM",
   port: "5432",
 });
 
