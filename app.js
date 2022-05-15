@@ -7,9 +7,9 @@ const { BASE_URL } = require("./src/utilities/routes");
 
 const Users = require("./src/models/users");
 const Approval = require("./src/models/approvals");
+const Organisations = require("./src/models/organisations");
 const Products = require("./src/models/products");
 const UserOrgs = require("./src/models/user_orgs");
-const Organisations = require("./src/models/organisations");
 const ProductModeDetails = require("./src/models/product_mode_details");
 
 
@@ -35,9 +35,9 @@ app.use(cors(corsOptions));
 // creating models if not created
 // Users.schemaFuncs();
 // Approval.schemaFuncs();
+// Organisations.schemaFuncs();
 // Products.schemaFuncs();
 // UserOrgs.schemaFuncs();
-// Organisations.schemaFuncs();
 // ProductModeDetails.schemaFuncs();
 
 app.use('/',require('./src/controllers/products'));

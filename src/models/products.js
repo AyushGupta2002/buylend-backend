@@ -22,6 +22,7 @@ async function schemaFuncs() {
         id TEXT primary key,
         product_name TEXT,
         category TEXT,
+        product_image TEXT,
         description TEXT,
         user_id TEXT,
         org_id TEXT,
