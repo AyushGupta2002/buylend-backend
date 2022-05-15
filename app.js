@@ -33,34 +33,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // creating models if not created
-Users.schemaFuncs();
-Approval.schemaFuncs();
-Products.schemaFuncs();
-UserOrgs.schemaFuncs();
-Organisations.schemaFuncs();
-ProductModeDetails.schemaFuncs();
+// Users.schemaFuncs();
+// Approval.schemaFuncs();
+// Products.schemaFuncs();
+// UserOrgs.schemaFuncs();
+// Organisations.schemaFuncs();
+// ProductModeDetails.schemaFuncs();
 
+app.use('/',require('./src/controllers/products'));
 
-
-// app.get("/api/org", (req, res) => {
-//   const Query = `SELECT * from buylend_schema`;
-//   pool.query(
-//     Query,
-//     (error, orgs) => {
-//       res.json({ response: orgs.rows });
-//     }
-//   );
-// });
-
-
-
-
-app.use((req, res) => {
-  res.status(404);
-  res.send({
-    error: { message: "Sorry, this is an invalid URL" },
-  });
-});
-//
 console.log("App is now ready on localhost:3000");
 app.listen(3000);
