@@ -6,7 +6,7 @@ const pool = new Pool({
   host: "bubhj8knto3tlez9ymru-postgresql.services.clever-cloud.com",
   database: "bubhj8knto3tlez9ymru",
   password: "o6gQMTaJn7bI9d9VdlED",
-  port: "5432",
+  port: "5432", 
 });
 
 module.exports = {

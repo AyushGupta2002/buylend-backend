@@ -4,14 +4,15 @@ module.exports = {
   TOKEN_SECRET: "token_secret",
 
   TABLE_NAMES: {
-    users : "users",
-    organisations : "organisations",
-    products : "products",
-    productModeDetails : "product_mode_details",
-    userOrgs : "user_orgs",
-    approvals : "approvals",
-    chatRoom : "chat_room",
-    messages : "messages"
+    // userDetails: "user_basic_details",
+    // address: "address",
+    // education: "education",
+    // relative: "relative_details",
+    // bank: "bank_details",
+    // finance: "financial_details",
+    // service: "service_access",
+    // pincode : "pincode_details",
+    // health : "health_history"
   },
 
   UPDATE_TYPES: {
