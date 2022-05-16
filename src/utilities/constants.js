@@ -9,7 +9,9 @@ module.exports = {
     products : "products",
     productModeDetails : "product_mode_details",
     userOrgs : "user_orgs",
-    approvals : "approvals"
+    approvals : "approvals",
+    chatRoom : "chat_room",
+    messages : "messages"
   },
 
   UPDATE_TYPES: {

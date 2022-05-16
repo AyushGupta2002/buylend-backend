@@ -11,6 +11,8 @@ const Organisations = require("./src/models/organisations");
 const Products = require("./src/models/products");
 const UserOrgs = require("./src/models/user_orgs");
 const ProductModeDetails = require("./src/models/product_mode_details");
+const ChatRoom = require("./src/models/chat_room");
+const Messages = require("./src/models/messages");
 
 
 
@@ -39,6 +41,9 @@ app.use(cors(corsOptions));
 // Products.schemaFuncs();
 // UserOrgs.schemaFuncs();
 // ProductModeDetails.schemaFuncs();
+// ChatRoom.schemaFuncs();
+// Messages.schemaFuncs();
+
 
 app.use('/',require('./src/controllers/products'));
 
