@@ -1,7 +1,7 @@
 var express = require('express');
 var socket = require('socket.io');
 
-const { pool } = require("./pool_connection");
+const { pool } = require("../../pool_connection");
 const Pool = require("pg").Pool;
 
 var app=express();
