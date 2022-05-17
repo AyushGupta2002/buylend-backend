@@ -4,6 +4,7 @@ const { pool } = require("../../pool_connection");
 const Pool = require("pg").Pool;
 const Users = require("../models/users");
 const chatServer = require("../config/chat");
+const crypto = require("crypto");
 // const Approval = require("../models/approvals");
 const UserOrgs = require("../models/user_orgs");
 app.use(express.json());
@@ -18,10 +19,10 @@ app.post('/newchat',async(req,res)=>{
     msg
   }=req.body;
 
-  const checkRoom = await pool.query(`select * from buylend_schema.chat_room where buyer_id = '${bid}' and seller_id = '${sid}'`);
+  // const checkRoom = await pool.query(`select * from buylend_schema.chat_room where buyer_id = '${bid}' and seller_id = '${sid}'`);
   // res.send("Inserted!");
 
-  const id = crypto.randomBytes(16).toString("hex"); // bid+sid
+  // const id = crypto.randomBytes(16).toString("hex"); // bid+sid
 
   console.log(req.body);
   try{
@@ -38,11 +39,17 @@ app.post('/newchat',async(req,res)=>{
 
 //Getting older chats
 app.get('/chat/:roomId',async(req,res)=>{
-  const {chatId} = req.params;
-  console.log(chatId);
   try{
-    const getOlderChatsById=await pool.query(`SELECT * from buylend_schema.chats where chat_id=$1`,[chatId]); // correct it
-    res.json(getOlderChatsById.rows);
+    const getOlderChatsById= await pool.query(`SELECT * from buylend_schema.messages where chat_id = '${req.params.roomId}'`); 
+    console.log("Hi!");
+    let messages = [];
+    getOlderChatsById.rows.forEach(el => {
+      messages.push({
+        sender : el.sender_id,
+        message : el.message
+      });
+    });
+    res.json({response: messages});
   }
   catch(error){
     res.send(error.message);
@@ -51,15 +58,18 @@ app.get('/chat/:roomId',async(req,res)=>{
 
 
 //Insert new chat into existing chat   .....work on it
-app.put('/chat/updatechat/:id',async(req,res)=>{
-  const { id } = req.params;
+app.post('/chat/:id',async(req,res)=>{
+  const { senderId } = req.params;
   const {msg} = req.body;
-
+  const chatID = '1';
   console.log(req.body);
 
+  const userId = crypto.randomBytes(16).toString("hex");
+
+
   try{
-    const updateExistingChat=await pool.query(`UPDATE buylend_schema.messages SET msg=$1 WHERE id=$2`,[msg,id]);
-    res.send(updateExistingChat.rows);
+    const InsertChat=await pool.query(`INSERT INTO buylend_schema.messages (id,chat_id,sender_id,message) VALUES ('${userId}','${chatID}','${req.params.id}','${req.body.msg}')`);
+    res.send(InsertChat);
   }
   catch(error)
   {

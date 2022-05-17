@@ -13,7 +13,7 @@ const UserOrgs = require("./src/models/user_orgs");
 const ProductModeDetails = require("./src/models/product_mode_details");
 const ChatRoom = require("./src/models/chat_room");
 const Messages = require("./src/models/messages");
-const ChatServer = require("./src/config/chat");
+// const ChatServer = require("./src/config/chat");
 
 
 const bodyParser = require("body-parser");
@@ -45,7 +45,7 @@ app.use(cors(corsOptions));
 // Messages.schemaFuncs();
 
 
-app.use('/',require('./src/controllers/products'));
+app.use('/',require('./src/controllers/chatApi'));
 
 console.log("App is now ready on localhost:3000");
 app.listen(3000);
