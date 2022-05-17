@@ -1,8 +1,8 @@
 const express = require("express");
 const { sendMail } = require("./Functions/sendMail");
 const { getOTP } = require("./Functions/getOTP");
-const jwt = require("jsonwebtoken"); 
-const { addUser, verifyUser } = require("./Model/user");
+const jwt = require("jsonwebtoken");
+const { addUser, verifyUser } = require("./src/controllers/user");
 const router = express.Router();
 // body parser middleware
 
@@ -31,7 +31,6 @@ router.post("/verify-otp", (req, res) => {
       res.cookie("hash", "");
       return res.status(201).json({ success: true });
     }
-
     res.status(404).json({ error: "Invalid OTP" });
   } catch (e) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -71,8 +70,8 @@ router.post("/sign-in", async (req, res) => {
 
     const user = await verifyUser(email, password);
     // console.log(user);
-    const token = jwt.sign({userId: user.id}, 'neijfnifbrefbeubfreuf');
-    if (user) return res.status(201).json({ success: true , token: token});
+    const token = jwt.sign({ userId: user.id }, "neijfnifbrefbeubfreuf");
+    if (user) return res.status(201).json({ success: true, token: token });
   } catch (e) {
     res.status(500).json({ error: e });
   }
