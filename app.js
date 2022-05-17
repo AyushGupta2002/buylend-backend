@@ -17,19 +17,21 @@ const { pool } = require("./pool_connection");
 const Pool = require("pg").Pool;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
+const auth = require("./auth");
 // common handling of requests
 // app.use(BASE_URL, (req, res, next) => {
 //   console.info(req.method, req.url);
 //   next();
 // });
+app.use(bodyParser.urlencoded({ extended: false }));
 
-const cors = require('cors');
+const cors = require("cors");
 const corsOptions = {
   origin(origin, callback) {
     callback(null, true);
   },
   credentials: true,
-  exposedHeaders: 'Content-disposition, x-suggested-filename',
+  exposedHeaders: "Content-disposition, x-suggested-filename",
 };
 app.use(cors(corsOptions));
 
@@ -45,22 +47,29 @@ app.use(cors(corsOptions));
 // app.use(getUrl(MAIN), MainPaths);
 // app.use(getUrl(BANK), BankPaths);
 
+// app.get("/", (req, res) => {
+//   const Query = `SELECT * from buylend_schema.organisations`;
+//   pool.query(
+//     Query,
+//     (error, result) => {
+//       res.json({ response: result.rows });
+//     }
+//   );
+// });
+
+// app.use((req, res) => {
+//   res.status(404);
+//   res.send({
+//     error: { message: "Sorry, this is an invalid URL" },
+//   });
+// });
+
 app.get("/", (req, res) => {
-  const Query = `SELECT * from buylend_schema.organisations`;
-  pool.query(
-    Query,
-    (error, result) => {
-      res.json({ response: result.rows });
-    }
-  );
+  res.json({ message: "Welcome" });
 });
 
-app.use((req, res) => {
-  res.status(404);
-  res.send({
-    error: { message: "Sorry, this is an invalid URL" },
-  });
-});
+app.use("/", auth);
+
 //
 console.log("App is now ready on localhost:3000");
 app.listen(3000);
