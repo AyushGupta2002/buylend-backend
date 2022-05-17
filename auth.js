@@ -1,14 +1,9 @@
 const express = require("express");
-const bodyparser = require("body-parser");
 const { sendMail } = require("./Functions/sendMail");
 const { getOTP } = require("./Functions/getOTP");
-const jwt = require("jsonwebtoken");
-const cookie = require("cookie-parser");
+const jwt = require("jsonwebtoken"); 
 const { addUser, verifyUser } = require("./Model/user");
-const app = express();
 const router = express.Router();
-
-app.use(cookie());
 // body parser middleware
 
 router.post("/verify-email", function (req, res) {
@@ -60,11 +55,8 @@ router.post("/sign-up", async (req, res) => {
     const user = req.body;
     console.log(user);
 
-    if (error) {
-      return res.status(404).json({ error });
-    }
-
-    if (user) return res.status(201).json({ success: true, token: user.token });
+    await addUser(name, email, password, phone_number, address);
+    if (user) return res.status(201).json({ success: true });
     res.status(400).json({ error: "sign up failed" });
   } catch (e) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -77,22 +69,18 @@ router.post("/sign-in", async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ error: "invalid access" });
 
-    const { user, error } = await verifyUser(email, password);
-
-    if (error) {
-      return res.status(404).json({ error });
-    }
-
-    if (user) return res.status(201).json({ success: true, token: user.token });
-    res.status(404).json({ error: "sign up failed" });
+    const user = await verifyUser(email, password);
+    // console.log(user);
+    const token = jwt.sign({userId: user.id}, 'neijfnifbrefbeubfreuf');
+    if (user) return res.status(201).json({ success: true , token: token});
   } catch (e) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: e });
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`app is live at ${PORT}`);
-});
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`app is live at ${PORT}`);
+// });
 
-// module.exports = router;
+module.exports = router;
