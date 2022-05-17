@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const cookie = require("cookie-parser");
 const { pool } = require("./pool_connection");
 // const { BASE_URL, USER, ADDRESS, EDUCATION, RELATIVE, BANK, FINANCE, SERVICE, PINCODE, HEALTH, MAIN } = require("./src/utilities/routes");
 // const userPaths = require("./src/controllers/user");
@@ -14,10 +15,11 @@ const { pool } = require("./pool_connection");
 // const HealthPaths = require("./src/controllers/health_history");
 // const MainPaths = require("./src/controllers/main");
 // const { getUrl } = require("./src/utilities/helpers");
+const auth = require("./auth");
 const Pool = require("pg").Pool;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-const auth = require("./auth");
+app.use(cookie());
 // common handling of requests
 // app.use(BASE_URL, (req, res, next) => {
 //   console.info(req.method, req.url);
@@ -64,12 +66,10 @@ app.use(cors(corsOptions));
 //   });
 // });
 
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome" });
-});
+// app.get("/", (req, res) => {
+//   res.json({ message: "Welcome" });
+// });
 
 app.use("/", auth);
 
-//
-console.log("App is now ready on localhost:3000");
-app.listen(3000);
+app.listen(3000, console.log("App is now ready on localhost:3000"));
