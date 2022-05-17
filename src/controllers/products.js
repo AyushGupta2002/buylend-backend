@@ -1,5 +1,6 @@
 const express = require('express');
 const app=express();
+const http=require('http');
 const crypto=require('crypto');
 const { pool } = require("../../pool_connection");
 const Pool = require("pg").Pool;
@@ -22,17 +23,39 @@ app.post('/org/newproduct',async(req,res)=>{
     description,
     user_id,
     org_id,
-    available
+    available,
+    price1="",
+    price2="",
   }=req.body;
 
   const id=crypto.randomBytes(16).toString("hex");
+  const modeId=crypto.randomBytes(16).toString("hex");
   try{
     const insertNewProduct=await pool.query(`INSERT INTO buylend_schema.products(id,product_name,category,product_image,description,user_id,org_id,available) VALUES
     ($1,$2,$3,$4,$5,$6,$7,$8) returning*`,[id,product_name,category,product_image,description,user_id,org_id,available]);
-    res.status(200).json(insertNewProduct.rows);
+    if(available=="Sell")
+    {
+    const insertProduct=await pool.query(`INSERT INTO buylend_schema.product_mode_details (id,mode,price,product_id) VALUES($1,$2,$3,$4) returning*`,[modeId,available,price1,id]);
+    res.status(200).json(insertProduct.rows);
+    }
+    else if(available=="Rent")
+    {
+      const insertProduct=await pool.query(`INSERT INTO buylend_schema.product_mode_details (id,mode,price,product_id) VALUES($1,$2,$3,$4) returning*`,[modeId,available,price2,id]);
+      res.status(200).json(insertProduct.rows);
+    }
+    else if(available=="Sell/Rent")
+    {
+      const modeIdForSell=crypto.randomBytes(16).toString("hex");
+      const modeIdForRent=crypto.randomBytes(16).toString("hex");
+      const insertProductSell=await pool.query(`INSERT INTO buylend_schema.product_mode_details (id,mode,price,product_id) VALUES($1,$2,$3,$4) returning*`,[modeIdForSell,"Sell",price1,id]);
+      const insertProductRent=await pool.query(`INSERT INTO buylend_schema.product_mode_details (id,mode,price,product_id) VALUES($1,$2,$3,$4) returning*`,[modeIdForRent,"Rent",price2,id]);
+      res.status(200).json(insertProductSell.rows);
+    }
+
   }
   catch(error)
   {
+    console.log(error.message);
     res.status(500).json(error);
   }
 });
@@ -78,8 +101,9 @@ app.put('/org/updateproduct/:id',async(req,res)=>{
 app.delete('/org/deleteproduct/:id',async(req,res)=>{
   const {id}=req.params;
   try{
+    const deleteData=await pool.query(`DELETE FROM buylend_schema.product_mode_details where product_id=$1`,[id]);
     const deleteProduct=await pool.query(`DELETE FROM buylend_schema.products WHERE id=$1`,[id]);
-    res.status(200).json(deleteProduct.rows);
+    res.status(200).json(deleteData.rows);
   }
   catch(error){
     res.status(500).json(error);
@@ -90,10 +114,26 @@ app.delete('/org/deleteproduct/:id',async(req,res)=>{
 app.get('/org/product/:proId',async(req,res)=>{
   const {proId}=req.params;
   try{
-    const getAllInfo=await pool.query(`SELECT product_name,category,product_image,description,available,price,name,email
-    ,phone_number FROM buylend_schema.products AS P INNER JOIN buylend_schema.product_mode_details AS Q
-    ON P.id=Q.product_id INNER JOIN buylend_schema.users AS R ON P.user_id=R.id WHERE P.id=$1`,[proId]);
-    res.status(200).json(getAllInfo.rows);
+    const getAllInfo=await pool.query(`SELECT product_name,category,product_image,description,name,email
+    ,phone_number FROM buylend_schema.products AS P INNER JOIN buylend_schema.users AS R 
+    ON P.user_id=R.id WHERE P.id=$1`,[proId]);
+
+    
+    const getModePrice=await pool.query(`SELECT mode,price FROM buylend_schema.product_mode_details WHERE product_id=$1`,
+    [proId]);
+    
+    const getAllInfoJson=(getAllInfo.rows);
+    //console.log(getAllInfoJson.rows);
+    const getModePriceJson=(getModePrice.rows);
+    //console.log(getModePriceJson.rows);
+    //const allInfo=JSON.stringify(JSON.parse(getAllInfoJson).concat(JSON.parse(getModePriceJson)));
+    const allInfo={
+      getAllInfoJson,
+      getModePriceJson
+    };
+    console.log(allInfo);
+    res.status(200).json(allInfo);
+    
   }
   catch(error)
   {
