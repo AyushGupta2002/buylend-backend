@@ -4,16 +4,14 @@ const { sendMail } = require("./Functions/sendMail");
 const { getOTP } = require("./Functions/getOTP");
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie-parser");
-const { addUser, verifyUser } = require("./Model/Users");
+const { addUser, verifyUser } = require("./Model/user");
 const app = express();
+const router = express.Router();
 
 app.use(cookie());
-
 // body parser middleware
-app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
 
-app.post("/verify-email", function (req, res) {
+router.post("/verify-email", function (req, res) {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: "Invalid access" });
   const otp = getOTP();
@@ -24,7 +22,7 @@ app.post("/verify-email", function (req, res) {
   res.status(201).json({ success: true });
 });
 
-app.post("/verify-otp", (req, res) => {
+router.post("/verify-otp", (req, res) => {
   try {
     const { enteredOTP } = req.body;
     const hashedOTP = req.cookies.hash;
@@ -45,32 +43,35 @@ app.post("/verify-otp", (req, res) => {
   }
 });
 
-app.post("/sign-up", async (req, res) => {
+router.post("/sign-up", async (req, res) => {
   try {
     const { name, email, password, phone_number, address } = req.body;
     if (!name || !email || !password || !phone_number || !address)
       return res.status(400).json({ error: "invalid access" });
-
-    const { user, error } = await addUser(
-      name,
-      email,
-      password,
-      phone_number,
-      address
-    );
+    console.log(req.body);
+    console.log(1);
+    // const { user, error } = await addUser(
+    //   name,
+    //   email,
+    //   password,
+    //   phone_number,
+    //   address
+    // );
+    const user = req.body;
+    console.log(user);
 
     if (error) {
       return res.status(404).json({ error });
     }
 
     if (user) return res.status(201).json({ success: true, token: user.token });
-    res.status(404).json({ error: "sign up failed" });
+    res.status(400).json({ error: "sign up failed" });
   } catch (e) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.post("/sign-in", async (req, res) => {
+router.post("/sign-in", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password)
@@ -93,3 +94,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`app is live at ${PORT}`);
 });
+
+// module.exports = router;
