@@ -1,5 +1,6 @@
 const express = require('express');
 const app=express();
+const crypto=require('crypto');
 const { pool } = require("../../pool_connection");
 const Pool = require("pg").Pool;
 const Users = require("../models/users");
@@ -15,7 +16,6 @@ app.use(express.json());// we access any data sent by the client side via req.bo
 //Inserting a new product
 app.post('/org/newproduct',async(req,res)=>{
   const {
-    id,
     product_name,
     category,
     product_image,
@@ -25,6 +25,7 @@ app.post('/org/newproduct',async(req,res)=>{
     available
   }=req.body;
 
+  const id=crypto.randomBytes(16).toString("hex");
   try{
     const insertNewProduct=await pool.query(`INSERT INTO buylend_schema.products(id,product_name,category,product_image,description,user_id,org_id,available) VALUES
     ($1,$2,$3,$4,$5,$6,$7,$8) returning*`,[id,product_name,category,product_image,description,user_id,org_id,available]);
@@ -32,7 +33,6 @@ app.post('/org/newproduct',async(req,res)=>{
   }
   catch(error)
   {
-    console.log(error.message);
     res.status(500).json(error);
   }
 });
@@ -47,7 +47,6 @@ app.get('/org/:orgId',async(req,res)=>{
     res.status(200).json(getProductsByOrgId.rows);
   }
   catch(error){
-    console.log(error.message);
     res.status(500).json(error);
   }
 });
@@ -130,7 +129,6 @@ app.get('/org/:orgId/mode/:available',async(req,res)=>{
     const getProductsByAvailability=await pool.query(`SELECT * FROM buylend_schema.products WHERE available=$1 
     AND org_id=$2`,[available,orgId]);
     res.status(200).json(getProductsByAvailability.rows);
-    console.log(getProductsByAvailability);
   }
   catch(error)
   {
@@ -142,7 +140,6 @@ app.get('/org/:orgId/mode/:available',async(req,res)=>{
 //Search Products by Location
 app.get('/org/location/:location',async(req,res)=>{
   const{location}=req.params;
-  console.log(location);
   try{
     const getProductsByLocation=await pool.query(`SELECT product_name,category,product_image,description,available,org_location 
     FROM buylend_schema.products AS P INNER JOIN buylend_schema.organisations
