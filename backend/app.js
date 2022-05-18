@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const { pool } = require("./pool_connection");
+const { pool } = require("../pool_connection");
 const Pool = require("pg").Pool;
 const { BASE_URL } = require("./src/utilities/routes");
 

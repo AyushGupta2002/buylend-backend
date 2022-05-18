@@ -1,5 +1,5 @@
 const { SCHEMA_NAME, SCHEMA_CODES } = require("../utilities/constants");
-const { pool } = require("../../pool_connection");
+const { pool } = require("../../../pool_connection");
 const { TABLE_NAMES } = require("../utilities/constants");
 
 async function schemaFuncs() {
@@ -18,18 +18,13 @@ async function schemaFuncs() {
     if (createRes) {
       console.log("\nCREATE SCHEMA RESULT:", createRes.command);
 
-      let createTableSql = `CREATE TABLE ${SCHEMA_NAME}.${TABLE_NAMES.products}(
+      let createTableSql = `CREATE TABLE ${SCHEMA_NAME}.${TABLE_NAMES.users}(
         id TEXT primary key,
-        product_name TEXT,
-        category TEXT,
-        product_image TEXT,
-        description TEXT,
-        user_id TEXT,
-        org_id TEXT,
-        available TEXT,
-        FOREIGN KEY(user_id) REFERENCES ${SCHEMA_NAME}.${TABLE_NAMES.users}(id),
-        FOREIGN KEY(org_id) REFERENCES ${SCHEMA_NAME}.${TABLE_NAMES.organisations}(id)
-
+        name TEXT,
+        email TEXT,
+        password TEXT,
+        phone_number TEXT,
+        address TEXT
       );`;
 
       console.log("\ncreateTableSql:", createTableSql);
